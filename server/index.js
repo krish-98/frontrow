@@ -1,8 +1,12 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const dotenv = require("dotenv")
+const userRouter = require("./routes/userRouter")
 dotenv.config()
 const app = express()
+
+// middlewares
+app.use("/user", userRouter)
 
 mongoose
   .connect(
