@@ -18,7 +18,6 @@ const getAllUsers = async (req, res, next) => {
 
 const signup = async (req, res, next) => {
   const { name, email, password } = req.body
-
   if (
     !name &&
     name.trim() === "" &&
@@ -49,4 +48,40 @@ const signup = async (req, res, next) => {
   return res.status(201).json({ user })
 }
 
-module.exports = { getAllUsers, signup }
+const updateUser = async (req, res, next) => {
+  const { id } = req.params
+  const { name, email, password } = req.body
+  if (
+    !name &&
+    name.trim() === "" &&
+    !email &&
+    email.trim() === "" &&
+    !password &&
+    password.trim() === ""
+  ) {
+    return res.status(422).json({
+      message: "Invalid Inputs",
+    })
+  }
+
+  const saltRounds = 10
+  const hashedPassword = bcrypt.hashSync(password, saltRounds)
+
+  let user
+  try {
+    user = await User.findByIdAndUpdate(id, {
+      name,
+      email,
+      password: hashedPassword,
+    })
+  } catch (error) {
+    return console.error(error)
+  }
+
+  if (!user) {
+    return res.status(500).json({ message: "Something went wrong" })
+  }
+  return res.json({ message: "Updated successfulyy" })
+}
+
+module.exports = { getAllUsers, signup, updateUser }

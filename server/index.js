@@ -16,7 +16,9 @@ mongoose
   )
   .then(() => {
     app.listen(process.env.PORT, () => {
-      console.log(`Database connected and the server is running on ${PORT}`)
+      console.log(
+        `Database connection established and the the server is running on port ${PORT}`
+      )
     })
   })
   .catch((error) => console.error(error))
