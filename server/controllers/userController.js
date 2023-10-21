@@ -1,4 +1,5 @@
 const User = require("../models/User")
+const bcrypt = require("bcrypt")
 
 const getAllUsers = async (req, res, next) => {
   let users
@@ -31,9 +32,12 @@ const signup = async (req, res, next) => {
     })
   }
 
+  const saltRounds = 10
+  const hashedPassword = bcrypt.hashSync(password, saltRounds)
+
   let user
   try {
-    user = new User({ name, email, password })
+    user = new User({ name, email, password: hashedPassword })
     user = await user.save()
   } catch (error) {
     return console.error(error)
