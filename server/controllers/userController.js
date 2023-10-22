@@ -59,9 +59,7 @@ const updateUser = async (req, res, next) => {
     !password &&
     password.trim() === ""
   ) {
-    return res.status(422).json({
-      message: "Invalid Inputs",
-    })
+    return res.status(422).json({ message: "Invalid Inputs" })
   }
 
   const saltRounds = 10
@@ -84,4 +82,20 @@ const updateUser = async (req, res, next) => {
   return res.json({ message: "Updated successfulyy" })
 }
 
-module.exports = { getAllUsers, signup, updateUser }
+const deleteUser = async (req, res, next) => {
+  const { id } = req.params
+
+  let user
+  try {
+    user = await User.findByIdAndDelete(id)
+  } catch (error) {
+    console.error(error)
+  }
+  if (!user) {
+    return res.status(500).json({ message: "Something went wrong" })
+  }
+
+  return res.json({ message: "Deleted Successfully" })
+}
+
+module.exports = { getAllUsers, signup, updateUser, deleteUser }
