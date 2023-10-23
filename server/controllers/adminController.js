@@ -1,8 +1,12 @@
 const bcrypt = require("bcrypt")
 const Admin = require("../models/Admin")
 
-const addAdmin = async (req, res, next) => {
+const adminSignup = async (req, res, next) => {
   const { email, password } = req.body
+
+  if (!email && email.trim() === "" && !password && password.trim() === "") {
+    return res.status(422).json({ message: "Invalid Inputs" })
+  }
 
   let existingUser
   try {
@@ -28,7 +32,31 @@ const addAdmin = async (req, res, next) => {
   if (!admin) {
     return res.status(500).json({ message: "Unable to store the admin" })
   }
-  return res.json({ admin })
+  return res.status(201).json({ admin })
 }
 
-module.exports = { addAdmin }
+const adminLogin = async (req, res, next) => {
+  const { email, password } = req.body
+  if (!email && email.trim() === "" && !password && password.trim() === "") {
+    return res.status(422).json({ message: "Invalid Inputs" })
+  }
+
+  let existingAdmin
+  try {
+    existingAdmin = await Admin.findOne({ email })
+  } catch (error) {
+    console.error(error)
+  }
+  if (!existingAdmin) {
+    return res.status(400).json({ message: "Admin not found" })
+  }
+
+  const isPasswordCorrect = bcrypt.compareSync(password, existingAdmin.password)
+  if (!isPasswordCorrect) {
+    return res.status(400).json({ message: "Incorrect Password" })
+  }
+
+  return res.json({ message: "Authentication complete" })
+}
+
+module.exports = { adminSignup, adminLogin }

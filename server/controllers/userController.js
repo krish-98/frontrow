@@ -26,9 +26,7 @@ const signup = async (req, res, next) => {
     !password &&
     password.trim() === ""
   ) {
-    return res.status(422).json({
-      message: "Invalid Inputs",
-    })
+    return res.status(422).json({ message: "Invalid Inputs" })
   }
 
   const saltRounds = 10
