@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt")
 const Admin = require("../models/Admin")
+const jwt = require("jsonwebtoken")
 
 const adminSignup = async (req, res, next) => {
   const { email, password } = req.body
@@ -56,7 +57,15 @@ const adminLogin = async (req, res, next) => {
     return res.status(400).json({ message: "Incorrect Password" })
   }
 
-  return res.json({ message: "Authentication complete" })
+  const token = jwt.sign({ id: existingAdmin._id }, process.env.SECRET_KEY, {
+    expiresIn: "7d",
+  })
+
+  return res.json({
+    message: "Authentication complete",
+    token,
+    id: existingAdmin._id,
+  })
 }
 
 module.exports = { adminSignup, adminLogin }
