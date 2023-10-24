@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const dotenv = require("dotenv")
 const userRouter = require("./routes/userRouters")
 const adminRouter = require("./routes/adminRouters")
+const movieRouter = require("./routes/movieRoutes")
 
 dotenv.config()
 const app = express()
@@ -12,6 +13,7 @@ const PORT = process.env.PORT || 3000
 app.use(express.json())
 app.use("/user", userRouter)
 app.use("/admin", adminRouter)
+app.use("/movie", movieRouter)
 
 mongoose
   .connect(
